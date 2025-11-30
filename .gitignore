@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Sensitive files
+*.csv
+*passwords*.txt
+*passwords*.csv
+user-passwords.txt
+*-passwords.txt
+
+# Temporary data files
+course-data*.json
+*-data*.json
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
