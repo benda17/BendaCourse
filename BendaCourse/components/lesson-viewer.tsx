@@ -241,10 +241,8 @@ export function LessonViewer({ courseId, modules, progress, onProgressUpdate }: 
               onProgress={handleProgress}
               onEnded={handleComplete}
               config={{
-                youtube: {
-                  playerVars: {
-                    autoplay: 0,
-                  },
+                playerVars: {
+                  autoplay: 0,
                 },
               }}
             />
