@@ -3,6 +3,8 @@ import { prisma } from '@/lib/prisma'
 import { fetchCoursesFromPlatform, extractYouTubeId, getYouTubeThumbnail } from '@/lib/api-client'
 import { slugify } from '@/lib/utils'
 
+export const dynamic = 'force-dynamic'
+
 // This endpoint should be called by a cron job (Vercel Cron, GitHub Actions, etc.)
 // For Vercel: Add to vercel.json cron configuration
 export async function GET(request: NextRequest) {

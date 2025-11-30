@@ -3,6 +3,8 @@ import { prisma } from '@/lib/prisma'
 import { generateResetToken } from '@/lib/auth'
 import { z } from 'zod'
 
+export const dynamic = 'force-dynamic'
+
 const forgotPasswordSchema = z.object({
   email: z.string().email(),
 })

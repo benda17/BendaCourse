@@ -50,13 +50,19 @@ export async function fetchCourseFromSchooler(
     // This is a placeholder - you'll need to implement based on Schooler's actual API
     // or use web scraping with authenticated session
     
+    // Build headers object, filtering out undefined values
+    const headers: Record<string, string> = {}
+    if (config.apiKey) {
+      headers['Authorization'] = `Bearer ${config.apiKey}`
+    }
+    if (config.sessionCookie) {
+      headers['Cookie'] = config.sessionCookie
+    }
+
     const response = await fetch(
       `${config.apiUrl || 'https://my.schooler.biz'}/api/courses/${courseId}`,
       {
-        headers: {
-          'Authorization': config.apiKey ? `Bearer ${config.apiKey}` : undefined,
-          'Cookie': config.sessionCookie || undefined,
-        },
+        headers,
       }
     )
 

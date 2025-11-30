@@ -4,6 +4,8 @@ import { prisma } from '@/lib/prisma'
 import { fetchCoursesFromPlatform, extractYouTubeId, getYouTubeThumbnail } from '@/lib/api-client'
 import { slugify } from '@/lib/utils'
 
+export const dynamic = 'force-dynamic'
+
 export async function POST(request: NextRequest) {
   try {
     const admin = requireAdmin(request)

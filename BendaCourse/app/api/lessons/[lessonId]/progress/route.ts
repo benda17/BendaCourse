@@ -3,6 +3,8 @@ import { requireAuth } from '@/lib/middleware-auth'
 import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
 
+export const dynamic = 'force-dynamic'
+
 const progressSchema = z.object({
   progress: z.number().min(0).max(100).optional(),
   completed: z.boolean().optional(),

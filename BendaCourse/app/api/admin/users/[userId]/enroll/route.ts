@@ -3,6 +3,8 @@ import { requireAdmin } from '@/lib/middleware-auth'
 import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
 
+export const dynamic = 'force-dynamic'
+
 const enrollSchema = z.object({
   courseId: z.string(),
 })

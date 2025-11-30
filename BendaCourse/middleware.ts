@@ -15,7 +15,12 @@ async function verifyTokenInMiddleware(token: string): Promise<JWTPayload | null
   try {
     const secret = new TextEncoder().encode(JWT_SECRET)
     const { payload } = await jwtVerify(token, secret)
-    return payload as JWTPayload
+    // Extract our custom payload structure from jose's JWTPayload
+    return {
+      userId: payload.userId as string,
+      email: payload.email as string,
+      role: payload.role as string,
+    }
   } catch (error) {
     console.error('[Middleware verifyToken] Error:', error instanceof Error ? error.message : String(error))
     return null
