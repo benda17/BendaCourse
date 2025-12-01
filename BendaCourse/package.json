@@ -13,7 +13,8 @@
     "db:studio": "prisma studio",
     "db:seed": "tsx prisma/seed.ts",
     "db:setup": "tsx scripts/setup-database.ts",
-    "send:credentials": "tsx scripts/send-user-credentials.ts"
+    "send:credentials": "tsx scripts/send-user-credentials.ts",
+    "test:db": "tsx test-db-connection.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.7.1",
