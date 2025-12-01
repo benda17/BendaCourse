@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-import { hashPassword } from '../lib/auth'
+import { hashPassword, verifyPassword } from '../lib/auth'
 import * as dotenv from 'dotenv'
 import * as path from 'path'
 import * as crypto from 'crypto'
@@ -23,28 +23,41 @@ function generatePassword(): string {
 
 // Hebrew marketing message
 const getHebrewMessage = (email: string, password: string, platformUrl: string) => `
-שלום,
+היי 🅱️!
 
-אנו שמחים לבשר לך שעברנו לפלטפורמה חדשה ומשופרת!
+זה בנדה, 
 
-פלטפורמת הלמידה החדשה שלנו מציעה חוויית למידה מתקדמת, ממשק נוח יותר, ומעקב התקדמות מפורט. 
-כל הקורסים והשיעורים שלך זמינים כעת בפלטפורמה החדשה.
+יש לי חדשות מצוינות בשבילך —
+
+אני שמח לעדכן שעברנו לפלטפורמת לימוד חדשה, מתקדמת ונוחה הרבה יותר.
+
+מהיום מחכה לך חוויית משתמש חלקה, מהירה ועם מעקב התקדמות חכם שיעזור לך ללמוד בצורה הכי טובה שיש.
+
+כל הקורסים והשיעורים שלך כבר מחכים לך שם, עם שם וסיסמא שייעודיים רק לך ויאפשרו לך לקבל חווית למידה מעמיקה, עם סטטיסטיקות ודרכי ייעול למידה
 
 פרטי הכניסה שלך:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📧 שם משתמש (אימייל): ${email}
-🔑 סיסמה: ${password}
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-אנא התחבר לפלטפורמה החדשה בכתובת:
+📧 אימייל: ${email}
+
+🔑 סיסמה: ${password}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+להתחברות ישירה:
+
 ${platformUrl}/login
 
-אנו ממליצים לשנות את הסיסמה לאחר הכניסה הראשונה.
+מומלץ להחליף סיסמה אחרי הכניסה הראשונה, רק בשביל השקט שלך.
 
-אם יש לך שאלות או בעיות, אנא צור איתנו קשר.
+ואם משהו לא עובד כמו שצריך — אני כאן עבורך לכל שאלה.
 
-בברכה,
-צוות בית הספר של בנדה
+
+
+באהבה,
+
+צוות בנדה בע"מ 🅱️
 `
 
 async function sendCredentialsEmail() {
@@ -111,10 +124,20 @@ async function sendCredentialsEmail() {
     try {
       // Hash and update password
       const hashedPassword = await hashPassword(newPassword)
-      await prisma.user.update({
+      
+      // Update password in database
+      const updatedUser = await prisma.user.update({
         where: { id: user.id },
         data: { password: hashedPassword },
       })
+      
+      // Verify the password was saved correctly
+      const passwordMatches = await verifyPassword(newPassword, updatedUser.password)
+      if (!passwordMatches) {
+        throw new Error(`Password verification failed after update for ${user.email}`)
+      }
+      
+      console.log(`✓ [${i + 1}/${users.length}] Password updated for: ${user.email}`)
 
       // Send email
       const mailOptions = {
@@ -125,27 +148,30 @@ async function sendCredentialsEmail() {
         html: `
           <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
             <div style="background-color: #1a1a1a; color: #e8dcc0; padding: 30px; border-radius: 8px; margin-bottom: 20px;">
-              <h1 style="margin: 0; font-size: 24px; text-align: center;">ברוכים הבאים לפלטפורמה החדשה!</h1>
+              <h1 style="margin: 0; font-size: 24px; text-align: center;">היי 🅱️! זה בנדה</h1>
             </div>
             
             <div style="background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-              <p style="font-size: 16px; line-height: 1.6; color: #333; margin-bottom: 20px;">
-                שלום ${user.name || ''},
+              <p style="font-size: 16px; line-height: 1.8; color: #333; margin-bottom: 20px;">
+                יש לי חדשות מצוינות בשבילך —
               </p>
               
               <p style="font-size: 16px; line-height: 1.8; color: #333; margin-bottom: 20px;">
-                אנו שמחים לבשר לך שעברנו לפלטפורמה חדשה ומשופרת!
+                אני שמח לעדכן שעברנו לפלטפורמת לימוד חדשה, מתקדמת ונוחה הרבה יותר.
               </p>
               
               <p style="font-size: 16px; line-height: 1.8; color: #333; margin-bottom: 20px;">
-                פלטפורמת הלמידה החדשה שלנו מציעה חוויית למידה מתקדמת, ממשק נוח יותר, ומעקב התקדמות מפורט. 
-                כל הקורסים והשיעורים שלך זמינים כעת בפלטפורמה החדשה.
+                מהיום מחכה לך חוויית משתמש חלקה, מהירה ועם מעקב התקדמות חכם שיעזור לך ללמוד בצורה הכי טובה שיש.
+              </p>
+              
+              <p style="font-size: 16px; line-height: 1.8; color: #333; margin-bottom: 20px;">
+                כל הקורסים והשיעורים שלך כבר מחכים לך שם, עם שם וסיסמא שייעודיים רק לך ויאפשרו לך לקבל חווית למידה מעמיקה, עם סטטיסטיקות ודרכי ייעול למידה
               </p>
               
               <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 30px 0; border-right: 4px solid #3b82f6;">
                 <h2 style="margin-top: 0; color: #1a1a1a; font-size: 18px;">פרטי הכניסה שלך:</h2>
                 <p style="margin: 10px 0; font-size: 16px;">
-                  <strong>📧 שם משתמש (אימייל):</strong><br>
+                  <strong>📧 אימייל:</strong><br>
                   <span style="font-family: monospace; background-color: #e8e8e8; padding: 5px 10px; border-radius: 4px; display: inline-block; margin-top: 5px;">${user.email}</span>
                 </p>
                 <p style="margin: 10px 0; font-size: 16px;">
@@ -156,18 +182,18 @@ async function sendCredentialsEmail() {
               
               <div style="text-align: center; margin: 30px 0;">
                 <a href="${platformUrl}/login" style="display: inline-block; background-color: #3b82f6; color: white; padding: 15px 30px; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">
-                  התחבר לפלטפורמה החדשה
+                  להתחברות ישירה
                 </a>
               </div>
               
               <p style="font-size: 14px; line-height: 1.6; color: #666; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
-                <strong>חשוב:</strong> אנו ממליצים לשנות את הסיסמה לאחר הכניסה הראשונה.<br>
-                אם יש לך שאלות או בעיות, אנא צור איתנו קשר.
+                מומלץ להחליף סיסמה אחרי הכניסה הראשונה, רק בשביל השקט שלך.<br><br>
+                ואם משהו לא עובד כמו שצריך — אני כאן עבורך לכל שאלה.
               </p>
             </div>
             
             <div style="text-align: center; margin-top: 20px; color: #999; font-size: 12px;">
-              <p>בברכה,<br>צוות בית הספר של בנדה</p>
+              <p>באהבה,<br>צוות בנדה בע"מ 🅱️</p>
             </div>
           </div>
         `,
