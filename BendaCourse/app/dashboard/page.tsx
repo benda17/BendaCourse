@@ -155,32 +155,6 @@ export default function DashboardPage() {
 
       <div className="container mx-auto px-4 py-12">
         <div className="flex gap-8 items-start">
-          {/* Logo on the left */}
-          <div className="hidden lg:block flex-shrink-0 sticky top-24">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-              className="relative"
-            >
-              <div className="relative">
-                <Image
-                  src="/roy-benda-logo.png"
-                  alt="Roy Benda"
-                  width={250}
-                  height={600}
-                  className="object-contain"
-                  style={{
-                    filter: 'drop-shadow(0 10px 25px rgba(0, 0, 0, 0.4))',
-                    mixBlendMode: 'multiply',
-                    WebkitFilter: 'drop-shadow(0 10px 25px rgba(0, 0, 0, 0.4))',
-                  }}
-                  priority
-                />
-              </div>
-            </motion.div>
-          </div>
-
           {/* Main content */}
           <div className="flex-1 min-w-0">
             <motion.div
@@ -260,6 +234,26 @@ export default function DashboardPage() {
             </motion.div>
           </div>
         </div>
+      </div>
+
+      {/* Icon logo at bottom left */}
+      <div className="fixed bottom-6 left-6 z-50">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+        >
+          <Image
+            src="/icon.png"
+            alt="Benda Course Platform"
+            width={64}
+            height={64}
+            className="object-contain drop-shadow-lg"
+            style={{
+              filter: 'drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3))',
+            }}
+          />
+        </motion.div>
       </div>
     </div>
   )
