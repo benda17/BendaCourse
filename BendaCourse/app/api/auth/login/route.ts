@@ -87,8 +87,24 @@ export async function POST(request: NextRequest) {
       )
     }
     console.error('Login error:', error)
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+      name: error instanceof Error ? error.name : undefined,
+    })
+    
+    // Check if it's a database connection error
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    if (errorMessage.includes('DATABASE_URL') || errorMessage.includes('connection') || errorMessage.includes('Prisma')) {
+      console.error('Database connection error detected')
+      return NextResponse.json(
+        { error: 'Database connection error. Please check environment variables.' },
+        { status: 500 }
+      )
+    }
+    
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Internal server error', details: process.env.NODE_ENV === 'development' ? errorMessage : undefined },
       { status: 500 }
     )
   }
