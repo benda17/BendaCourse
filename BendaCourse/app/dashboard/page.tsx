@@ -156,20 +156,28 @@ export default function DashboardPage() {
       <div className="container mx-auto px-4 py-12">
         <div className="flex gap-8 items-start">
           {/* Logo on the left */}
-          <div className="hidden lg:block flex-shrink-0">
+          <div className="hidden lg:block flex-shrink-0 sticky top-24">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
+              className="relative"
             >
-              <Image
-                src="/roy-benda-logo.png"
-                alt="Roy Benda"
-                width={200}
-                height={400}
-                className="object-contain"
-                priority
-              />
+              <div className="relative">
+                <Image
+                  src="/roy-benda-logo.png"
+                  alt="Roy Benda"
+                  width={250}
+                  height={600}
+                  className="object-contain"
+                  style={{
+                    filter: 'drop-shadow(0 10px 25px rgba(0, 0, 0, 0.4))',
+                    mixBlendMode: 'multiply',
+                    WebkitFilter: 'drop-shadow(0 10px 25px rgba(0, 0, 0, 0.4))',
+                  }}
+                  priority
+                />
+              </div>
             </motion.div>
           </div>
 

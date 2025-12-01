@@ -81,3 +81,23 @@
   transition-duration: 150ms;
 }
 
+/* Remove white background from logo and make it look like standing */
+img[src*="roy-benda-logo"] {
+  background: transparent !important;
+  mix-blend-mode: multiply;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* Remove white background using CSS filters */
+img[src*="roy-benda-logo"] {
+  filter: 
+    drop-shadow(0 10px 25px rgba(0, 0, 0, 0.4))
+    contrast(1.05) 
+    brightness(0.98);
+  -webkit-filter: 
+    drop-shadow(0 10px 25px rgba(0, 0, 0, 0.4))
+    contrast(1.05) 
+    brightness(0.98);
+}
+
