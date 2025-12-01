@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
@@ -153,13 +154,34 @@ export default function DashboardPage() {
       </nav>
 
       <div className="container mx-auto px-4 py-12">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <h1 className="text-4xl font-bold mb-2">ברוך שובך{user?.name ? `, ${user.name}` : ''}</h1>
-          <p className="text-muted-foreground mb-8">המשך את מסע הלמידה שלך</p>
+        <div className="flex gap-8 items-start">
+          {/* Logo on the left */}
+          <div className="hidden lg:block flex-shrink-0">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <Image
+                src="/roy-benda-logo.png"
+                alt="Roy Benda"
+                width={200}
+                height={400}
+                className="object-contain"
+                priority
+              />
+            </motion.div>
+          </div>
+
+          {/* Main content */}
+          <div className="flex-1 min-w-0">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <h1 className="text-4xl font-bold mb-2">ברוך שובך{user?.name ? `, ${user.name}` : ''}</h1>
+              <p className="text-muted-foreground mb-8">המשך את מסע הלמידה שלך</p>
           
           {courses.length > 0 && (
             <div className="mb-4 text-sm text-muted-foreground">
@@ -227,7 +249,9 @@ export default function DashboardPage() {
               })}
             </div>
           )}
-        </motion.div>
+            </motion.div>
+          </div>
+        </div>
       </div>
     </div>
   )
