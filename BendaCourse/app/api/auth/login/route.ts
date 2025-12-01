@@ -95,10 +95,13 @@ export async function POST(request: NextRequest) {
     
     // Check if it's a database connection error
     const errorMessage = error instanceof Error ? error.message : String(error)
-    if (errorMessage.includes('DATABASE_URL') || errorMessage.includes('connection') || errorMessage.includes('Prisma')) {
-      console.error('Database connection error detected')
+    if (errorMessage.includes('DATABASE_URL') || errorMessage.includes('connection') || errorMessage.includes('Prisma') || errorMessage.includes('Environment variable not found')) {
+      console.error('Database connection error detected:', errorMessage)
       return NextResponse.json(
-        { error: 'Database connection error. Please check environment variables.' },
+        { 
+          error: 'Database not configured. Please set DATABASE_URL environment variable in Vercel settings.',
+          details: process.env.NODE_ENV === 'development' ? errorMessage : undefined
+        },
         { status: 500 }
       )
     }
