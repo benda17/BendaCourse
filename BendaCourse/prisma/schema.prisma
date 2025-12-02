@@ -6,10 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  // Connection pooling settings for serverless (Supabase pgbouncer)
-  directUrl = env("DIRECT_URL") // Optional: for migrations only
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 enum UserRole {
