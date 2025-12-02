@@ -10,6 +10,12 @@ function createPrismaClient() {
   // For now, create the client - it will fail gracefully if DATABASE_URL is missing at runtime
   return new PrismaClient({
     log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+    // Optimize for serverless/connection pooling
+    datasources: {
+      db: {
+        url: process.env.DATABASE_URL,
+      },
+    },
   })
 }
 
