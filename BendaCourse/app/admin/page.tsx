@@ -447,16 +447,16 @@ export default function AdminPage() {
                   <div className="space-y-2 md:col-span-2">
                     <Label htmlFor="newCourse">הרשמה לקורס (אופציונלי)</Label>
                     <Select
-                      value={newUser.courseId}
+                      value={newUser.courseId || 'none'}
                       onValueChange={(value) =>
-                        setNewUser({ ...newUser, courseId: value })
+                        setNewUser({ ...newUser, courseId: value === 'none' ? '' : value })
                       }
                     >
                       <SelectTrigger id="newCourse">
                         <SelectValue placeholder="בחר קורס..." />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">ללא קורס</SelectItem>
+                        <SelectItem value="none">ללא קורס</SelectItem>
                         {courses.filter(c => c.isActive).map((course) => (
                           <SelectItem key={course.id} value={course.id}>
                             {course.title}
