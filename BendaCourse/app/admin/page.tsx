@@ -42,24 +42,45 @@ interface User {
   }>
 }
 
+interface Course {
+  id: string
+  title: string
+  isActive: boolean
+}
+
 export default function AdminPage() {
   const router = useRouter()
   const { toast } = useToast()
   const [users, setUsers] = useState<User[]>([])
   const [filteredUsers, setFilteredUsers] = useState<User[]>([])
+  const [courses, setCourses] = useState<Course[]>([])
   const [loading, setLoading] = useState(true)
   const [syncing, setSyncing] = useState(false)
   const [enrollUserId, setEnrollUserId] = useState('')
   const [enrollCourseId, setEnrollCourseId] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
   const [showAddUser, setShowAddUser] = useState(false)
-  const [newUser, setNewUser] = useState({ email: '', password: '', name: '', role: 'STUDENT' as 'ADMIN' | 'STUDENT' })
+  const [newUser, setNewUser] = useState({ email: '', password: '', name: '', role: 'STUDENT' as 'ADMIN' | 'STUDENT', courseId: '' })
   const [deleteUserId, setDeleteUserId] = useState<string | null>(null)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
 
   useEffect(() => {
     fetchUsers()
+    fetchCourses()
   }, [])
+
+  const fetchCourses = async () => {
+    try {
+      const response = await fetch('/api/admin/courses')
+      if (!response.ok) {
+        throw new Error('Failed to fetch courses')
+      }
+      const data = await response.json()
+      setCourses(data.courses || [])
+    } catch (error) {
+      console.error('Failed to load courses:', error)
+    }
+  }
 
   useEffect(() => {
     // Filter users based on search query
@@ -193,11 +214,15 @@ export default function AdminPage() {
       })
 
       if (response.ok) {
-      toast({
-        title: 'המשתמש נוצר',
-        description: `המשתמש ${newUser.email} נוצר בהצלחה. אימייל נשלח עם פרטי הכניסה.`,
-      })
-        setNewUser({ email: '', password: '', name: '', role: 'STUDENT' })
+        const data = await response.json()
+        const courseInfo = data.user?.enrollments?.length > 0
+          ? ` והוא נרשם לקורס: ${data.user.enrollments.map((e: any) => e.course.title).join(', ')}`
+          : ''
+        toast({
+          title: 'המשתמש נוצר',
+          description: `המשתמש ${newUser.email} נוצר בהצלחה.${courseInfo} אימייל נשלח עם פרטי הכניסה.`,
+        })
+        setNewUser({ email: '', password: '', name: '', role: 'STUDENT', courseId: '' })
         setShowAddUser(false)
         fetchUsers()
       } else {
@@ -364,7 +389,7 @@ export default function AdminPage() {
                     size="sm"
                     onClick={() => {
                       setShowAddUser(false)
-                      setNewUser({ email: '', password: '', name: '', role: 'STUDENT' })
+                      setNewUser({ email: '', password: '', name: '', role: 'STUDENT', courseId: '' })
                     }}
                   >
                     <X className="w-4 h-4" />
@@ -419,6 +444,27 @@ export default function AdminPage() {
                       </SelectContent>
                     </Select>
                   </div>
+                  <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="newCourse">הרשמה לקורס (אופציונלי)</Label>
+                    <Select
+                      value={newUser.courseId}
+                      onValueChange={(value) =>
+                        setNewUser({ ...newUser, courseId: value })
+                      }
+                    >
+                      <SelectTrigger id="newCourse">
+                        <SelectValue placeholder="בחר קורס..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">ללא קורס</SelectItem>
+                        {courses.filter(c => c.isActive).map((course) => (
+                          <SelectItem key={course.id} value={course.id}>
+                            {course.title}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
                 <div className="flex gap-2">
                   <Button onClick={handleAddUser} className="flex-1">
@@ -428,7 +474,7 @@ export default function AdminPage() {
                     variant="outline"
                     onClick={() => {
                       setShowAddUser(false)
-                      setNewUser({ email: '', password: '', name: '', role: 'STUDENT' })
+                      setNewUser({ email: '', password: '', name: '', role: 'STUDENT', courseId: '' })
                     }}
                   >
                     ביטול

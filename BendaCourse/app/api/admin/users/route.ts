@@ -12,6 +12,7 @@ const createUserSchema = z.object({
   password: z.string().min(8),
   name: z.string().optional(),
   role: z.enum(['ADMIN', 'STUDENT']).default('STUDENT'),
+  courseId: z.string().optional(),
 })
 
 export async function GET(request: NextRequest) {
@@ -62,7 +63,7 @@ export async function POST(request: NextRequest) {
     requireAdmin(request)
 
     const body = await request.json()
-    const { email, password, name, role } = createUserSchema.parse(body)
+    const { email, password, name, role, courseId } = createUserSchema.parse(body)
 
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
@@ -91,8 +92,54 @@ export async function POST(request: NextRequest) {
         name: true,
         role: true,
         createdAt: true,
+      },
+    })
+
+    // Enroll user in course if courseId is provided
+    let enrolledCourses: Array<{ id: string; title: string }> = []
+    if (courseId) {
+      try {
+        // Verify course exists
+        const course = await prisma.course.findUnique({
+          where: { id: courseId },
+          select: { id: true, title: true },
+        })
+
+        if (course) {
+          // Create enrollment
+          await prisma.enrollment.create({
+            data: {
+              userId: user.id,
+              courseId: courseId,
+            },
+          })
+          enrolledCourses = [{ id: course.id, title: course.title }]
+        }
+      } catch (error) {
+        // Log error but don't fail user creation
+        console.error('Failed to enroll user in course:', error)
+      }
+    }
+
+    // Send welcome email with credentials
+    try {
+      await sendWelcomeEmail(user.email, password, user.name, enrolledCourses)
+    } catch (error) {
+      // Log error but don't fail user creation
+      console.error('Failed to send welcome email:', error)
+    }
+
+    // Fetch user with enrollments for response
+    const userWithEnrollments = await prisma.user.findUnique({
+      where: { id: user.id },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        createdAt: true,
         enrollments: {
-          include: {
+          select: {
             course: {
               select: {
                 id: true,
@@ -104,19 +151,7 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // Send welcome email with credentials
-    try {
-      const courses = user.enrollments.map(e => ({
-        id: e.course.id,
-        title: e.course.title,
-      }))
-      await sendWelcomeEmail(user.email, password, user.name, courses)
-    } catch (error) {
-      // Log error but don't fail user creation
-      console.error('Failed to send welcome email:', error)
-    }
-
-    return NextResponse.json({ user }, { status: 201 })
+    return NextResponse.json({ user: userWithEnrollments }, { status: 201 })
   } catch (error) {
     if (error instanceof Error && error.message === 'Forbidden: Admin access required') {
       return NextResponse.json(
