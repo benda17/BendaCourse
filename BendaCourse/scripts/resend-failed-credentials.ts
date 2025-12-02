@@ -134,11 +134,24 @@ async function resendFailedCredentials() {
   // Determine which users to process
   let usersToProcess
   if (specificEmails.length > 0) {
+    // Normalize both lists to lowercase for comparison
+    const normalizedFailedEmails = specificEmails.map(e => e.toLowerCase().trim())
+    const normalizedUserEmails = allUsers.map(u => u.email.toLowerCase())
+    
     // Only resend to previously failed emails
     usersToProcess = allUsers.filter(user => 
-      specificEmails.includes(user.email.toLowerCase())
+      normalizedFailedEmails.includes(user.email.toLowerCase())
     )
     console.log(`Filtered to ${usersToProcess.length} users from failed list\n`)
+    
+    if (usersToProcess.length === 0 && allUsers.length > 0) {
+      console.log('⚠️  Warning: No users matched the failed emails list!')
+      console.log('This might be due to case sensitivity or email format differences.')
+      console.log('Sample failed email:', normalizedFailedEmails[0])
+      console.log('Sample user email:', normalizedUserEmails[0])
+      console.log('\nWill resend to ALL users instead...\n')
+      usersToProcess = allUsers
+    }
   } else {
     // Resend to all users (since we don't have a record of failures)
     usersToProcess = allUsers

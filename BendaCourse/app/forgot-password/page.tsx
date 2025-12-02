@@ -34,13 +34,13 @@ export default function ForgotPasswordPage() {
 
       setSent(true)
       toast({
-        title: 'Reset link sent',
-        description: 'Check your email for password reset instructions.',
+        title: 'קישור איפוס נשלח',
+        description: 'בדוק את האימייל שלך להוראות איפוס הסיסמה.',
       })
     } catch (error) {
       toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Please try again.',
+        title: 'שגיאה',
+        description: error instanceof Error ? error.message : 'אנא נסה שוב.',
         variant: 'destructive',
       })
     } finally {
@@ -59,14 +59,14 @@ export default function ForgotPasswordPage() {
         >
           <Card className="border-border/40">
             <CardHeader className="space-y-1">
-              <CardTitle className="text-2xl font-bold text-center">Check Your Email</CardTitle>
+              <CardTitle className="text-2xl font-bold text-center">בדוק את האימייל שלך</CardTitle>
               <CardDescription className="text-center">
-                We've sent password reset instructions to {email}
+                שלחנו הוראות איפוס סיסמה ל-{email}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Link href="/login">
-                <Button className="w-full">Back to Login</Button>
+                <Button className="w-full">חזרה להתחברות</Button>
               </Link>
             </CardContent>
           </Card>
@@ -85,15 +85,15 @@ export default function ForgotPasswordPage() {
       >
         <Card className="border-border/40">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-center">Forgot Password</CardTitle>
+            <CardTitle className="text-2xl font-bold text-center">שכחתי סיסמה</CardTitle>
             <CardDescription className="text-center">
-              Enter your email to receive reset instructions
+              הזן את האימייל שלך כדי לקבל הוראות איפוס
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">אימייל</Label>
                 <Input
                   id="email"
                   type="email"
@@ -104,13 +104,13 @@ export default function ForgotPasswordPage() {
                 />
               </div>
               <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? 'Sending...' : 'Send Reset Link'}
+                {loading ? 'שולח...' : 'שלח קישור איפוס'}
               </Button>
             </form>
             <div className="mt-4 text-center text-sm text-muted-foreground">
-              Remember your password?{' '}
+              זוכר את הסיסמה שלך?{' '}
               <Link href="/login" className="text-primary hover:underline">
-                Sign in
+                התחבר
               </Link>
             </div>
           </CardContent>

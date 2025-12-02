@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin } from '@/lib/middleware-auth'
 import { prisma } from '@/lib/prisma'
 import { hashPassword } from '@/lib/auth'
+import { sendWelcomeEmail } from '@/lib/email'
 import { z } from 'zod'
 
 export const dynamic = 'force-dynamic'
@@ -90,8 +91,30 @@ export async function POST(request: NextRequest) {
         name: true,
         role: true,
         createdAt: true,
+        enrollments: {
+          include: {
+            course: {
+              select: {
+                id: true,
+                title: true,
+              },
+            },
+          },
+        },
       },
     })
+
+    // Send welcome email with credentials
+    try {
+      const courses = user.enrollments.map(e => ({
+        id: e.course.id,
+        title: e.course.title,
+      }))
+      await sendWelcomeEmail(user.email, password, user.name, courses)
+    } catch (error) {
+      // Log error but don't fail user creation
+      console.error('Failed to send welcome email:', error)
+    }
 
     return NextResponse.json({ user }, { status: 201 })
   } catch (error) {

@@ -92,8 +92,8 @@ export default function AdminPage() {
       setUsers(data.users || [])
     } catch (error) {
       toast({
-        title: 'Error',
-        description: 'Failed to load users.',
+        title: 'שגיאה',
+        description: 'נכשל בטעינת המשתמשים.',
         variant: 'destructive',
       })
     } finally {
@@ -110,17 +110,17 @@ export default function AdminPage() {
       const data = await response.json()
 
       if (response.ok) {
-        toast({
-          title: 'Sync completed',
-          description: `Synced ${data.coursesSynced} courses and ${data.lessonsSynced} lessons.`,
-        })
+      toast({
+        title: 'הסנכרון הושלם',
+        description: `סונכרנו ${data.coursesSynced} קורסים ו-${data.lessonsSynced} שיעורים.`,
+      })
       } else {
         throw new Error(data.error || 'Sync failed')
       }
     } catch (error) {
       toast({
-        title: 'Sync failed',
-        description: error instanceof Error ? error.message : 'Please try again.',
+        title: 'הסנכרון נכשל',
+        description: error instanceof Error ? error.message : 'אנא נסה שוב.',
         variant: 'destructive',
       })
     } finally {
@@ -131,8 +131,8 @@ export default function AdminPage() {
   const handleEnroll = async () => {
     if (!enrollUserId || !enrollCourseId) {
       toast({
-        title: 'Missing fields',
-        description: 'Please provide both user ID and course ID.',
+        title: 'שדות חסרים',
+        description: 'אנא מלא גם מזהה משתמש וגם מזהה קורס.',
         variant: 'destructive',
       })
       return
@@ -146,10 +146,10 @@ export default function AdminPage() {
       })
 
       if (response.ok) {
-        toast({
-          title: 'User enrolled',
-          description: 'The user has been enrolled in the course.',
-        })
+      toast({
+        title: 'המשתמש נרשם',
+        description: 'המשתמש נרשם בהצלחה לקורס.',
+      })
         setEnrollUserId('')
         setEnrollCourseId('')
         fetchUsers()
@@ -159,8 +159,8 @@ export default function AdminPage() {
       }
     } catch (error) {
       toast({
-        title: 'Enrollment failed',
-        description: error instanceof Error ? error.message : 'Please try again.',
+        title: 'ההרשמה נכשלה',
+        description: error instanceof Error ? error.message : 'אנא נסה שוב.',
         variant: 'destructive',
       })
     }
@@ -169,8 +169,8 @@ export default function AdminPage() {
   const handleAddUser = async () => {
     if (!newUser.email || !newUser.password) {
       toast({
-        title: 'Missing fields',
-        description: 'Please provide email and password.',
+        title: 'שדות חסרים',
+        description: 'אנא מלא אימייל וסיסמה.',
         variant: 'destructive',
       })
       return
@@ -178,8 +178,8 @@ export default function AdminPage() {
 
     if (newUser.password.length < 8) {
       toast({
-        title: 'Invalid password',
-        description: 'Password must be at least 8 characters.',
+        title: 'סיסמה לא תקינה',
+        description: 'הסיסמה חייבת להכיל לפחות 8 תווים.',
         variant: 'destructive',
       })
       return
@@ -193,10 +193,10 @@ export default function AdminPage() {
       })
 
       if (response.ok) {
-        toast({
-          title: 'User created',
-          description: `User ${newUser.email} has been created successfully.`,
-        })
+      toast({
+        title: 'המשתמש נוצר',
+        description: `המשתמש ${newUser.email} נוצר בהצלחה. אימייל נשלח עם פרטי הכניסה.`,
+      })
         setNewUser({ email: '', password: '', name: '', role: 'STUDENT' })
         setShowAddUser(false)
         fetchUsers()
@@ -206,8 +206,8 @@ export default function AdminPage() {
       }
     } catch (error) {
       toast({
-        title: 'Failed to create user',
-        description: error instanceof Error ? error.message : 'Please try again.',
+        title: 'יצירת המשתמש נכשלה',
+        description: error instanceof Error ? error.message : 'אנא נסה שוב.',
         variant: 'destructive',
       })
     }
@@ -227,10 +227,10 @@ export default function AdminPage() {
       })
 
       if (response.ok) {
-        toast({
-          title: 'User deleted',
-          description: 'The user has been deleted successfully.',
-        })
+      toast({
+        title: 'המשתמש נמחק',
+        description: 'המשתמש נמחק בהצלחה.',
+      })
         fetchUsers()
       } else {
         const data = await response.json()
@@ -238,8 +238,8 @@ export default function AdminPage() {
       }
     } catch (error) {
       toast({
-        title: 'Failed to delete user',
-        description: error instanceof Error ? error.message : 'Please try again.',
+        title: 'מחיקת המשתמש נכשלה',
+        description: error instanceof Error ? error.message : 'אנא נסה שוב.',
         variant: 'destructive',
       })
     } finally {
@@ -251,7 +251,7 @@ export default function AdminPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-muted-foreground">Loading...</div>
+        <div className="text-muted-foreground">טוען...</div>
       </div>
     )
   }
@@ -265,7 +265,7 @@ export default function AdminPage() {
             Benda Academy
           </Link>
           <Link href="/dashboard">
-            <Button variant="ghost">Back to Dashboard</Button>
+            <Button variant="ghost">חזרה ללוח הבקרה</Button>
           </Link>
         </div>
       </nav>
@@ -276,7 +276,7 @@ export default function AdminPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-4xl font-bold mb-8">Admin Dashboard</h1>
+          <h1 className="text-4xl font-bold mb-8">לוח בקרה למנהלים</h1>
 
           {/* Actions */}
           <div className="grid md:grid-cols-3 gap-6 mb-8">
@@ -284,15 +284,15 @@ export default function AdminPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <RefreshCw className="w-5 h-5" />
-                  Sync Courses
+                  סנכרון קורסים
                 </CardTitle>
                 <CardDescription>
-                  Fetch latest courses and lessons from the external platform
+                  משיכת קורסים ושיעורים עדכניים מהפלטפורמה החיצונית
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <Button onClick={handleSync} disabled={syncing} className="w-full">
-                  {syncing ? 'Syncing...' : 'Sync Now'}
+                  {syncing ? 'מסנכרן...' : 'סנכרן עכשיו'}
                 </Button>
               </CardContent>
             </Card>
@@ -301,15 +301,15 @@ export default function AdminPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <UserPlus className="w-5 h-5" />
-                  Add New User
+                  הוספת משתמש חדש
                 </CardTitle>
                 <CardDescription>
-                  Create a new user account
+                  יצירת חשבון משתמש חדש
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <Button onClick={() => setShowAddUser(true)} className="w-full">
-                  Add User
+                  הוסף משתמש
                 </Button>
               </CardContent>
             </Card>
@@ -318,33 +318,33 @@ export default function AdminPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <BookOpen className="w-5 h-5" />
-                  Enroll User
+                  הרשמת משתמש
                 </CardTitle>
                 <CardDescription>
-                  Manually enroll a user in a course
+                  הרשמת משתמש לקורס ידנית
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="userId">User ID</Label>
+                  <Label htmlFor="userId">מזהה משתמש</Label>
                   <Input
                     id="userId"
                     value={enrollUserId}
                     onChange={(e) => setEnrollUserId(e.target.value)}
-                    placeholder="User ID"
+                    placeholder="מזהה משתמש"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="courseId">Course ID</Label>
+                  <Label htmlFor="courseId">מזהה קורס</Label>
                   <Input
                     id="courseId"
                     value={enrollCourseId}
                     onChange={(e) => setEnrollCourseId(e.target.value)}
-                    placeholder="Course ID"
+                    placeholder="מזהה קורס"
                   />
                 </div>
                 <Button onClick={handleEnroll} className="w-full">
-                  Enroll User
+                  הרשם משתמש
                 </Button>
               </CardContent>
             </Card>
@@ -357,7 +357,7 @@ export default function AdminPage() {
                 <CardTitle className="flex items-center justify-between">
                   <span className="flex items-center gap-2">
                     <UserPlus className="w-5 h-5" />
-                    Add New User
+                    הוספת משתמש חדש
                   </span>
                   <Button
                     variant="ghost"
@@ -374,7 +374,7 @@ export default function AdminPage() {
               <CardContent className="space-y-4">
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="newEmail">Email *</Label>
+                    <Label htmlFor="newEmail">אימייל *</Label>
                     <Input
                       id="newEmail"
                       type="email"
@@ -384,26 +384,26 @@ export default function AdminPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="newPassword">Password *</Label>
+                    <Label htmlFor="newPassword">סיסמה *</Label>
                     <Input
                       id="newPassword"
                       type="password"
                       value={newUser.password}
                       onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
-                      placeholder="Minimum 8 characters"
+                      placeholder="מינימום 8 תווים"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="newName">Name (Optional)</Label>
+                    <Label htmlFor="newName">שם (אופציונלי)</Label>
                     <Input
                       id="newName"
                       value={newUser.name}
                       onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
-                      placeholder="Full name"
+                      placeholder="שם מלא"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="newRole">Role</Label>
+                    <Label htmlFor="newRole">תפקיד</Label>
                     <Select
                       value={newUser.role}
                       onValueChange={(value: 'ADMIN' | 'STUDENT') =>
@@ -414,15 +414,15 @@ export default function AdminPage() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="STUDENT">Student</SelectItem>
-                        <SelectItem value="ADMIN">Admin</SelectItem>
+                        <SelectItem value="STUDENT">תלמיד</SelectItem>
+                        <SelectItem value="ADMIN">מנהל</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
                 <div className="flex gap-2">
                   <Button onClick={handleAddUser} className="flex-1">
-                    Create User
+                    צור משתמש
                   </Button>
                   <Button
                     variant="outline"
@@ -431,7 +431,7 @@ export default function AdminPage() {
                       setNewUser({ email: '', password: '', name: '', role: 'STUDENT' })
                     }}
                   >
-                    Cancel
+                    ביטול
                   </Button>
                 </div>
               </CardContent>
@@ -445,16 +445,16 @@ export default function AdminPage() {
                 <div>
                   <CardTitle className="flex items-center gap-2">
                     <Users className="w-5 h-5" />
-                    Users ({filteredUsers.length} of {users.length})
+                    משתמשים ({filteredUsers.length} מתוך {users.length})
                   </CardTitle>
                   <CardDescription>
-                    Manage users and their enrollments
+                    ניהול משתמשים והרשמותיהם
                   </CardDescription>
                 </div>
                 <div className="relative w-64">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
-                    placeholder="Search users..."
+                    placeholder="חפש משתמשים..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-10"
@@ -466,7 +466,7 @@ export default function AdminPage() {
               <div className="space-y-4">
                 {filteredUsers.length === 0 ? (
                   <div className="text-center py-8 text-muted-foreground">
-                    {searchQuery ? 'No users found matching your search.' : 'No users found.'}
+                    {searchQuery ? 'לא נמצאו משתמשים התואמים לחיפוש שלך.' : 'לא נמצאו משתמשים.'}
                   </div>
                 ) : (
                   filteredUsers.map((user) => (
@@ -484,15 +484,15 @@ export default function AdminPage() {
                           )}
                         </div>
                         <div className="text-sm text-muted-foreground mt-1">
-                          {user.name || 'No name'} • {user.enrollments.length} course{user.enrollments.length !== 1 ? 's' : ''}
+                          {user.name || 'ללא שם'} • {user.enrollments.length} קורס{user.enrollments.length !== 1 ? 'ים' : ''}
                         </div>
                         {user.enrollments.length > 0 && (
                           <div className="text-xs text-muted-foreground mt-1">
-                            Courses: {user.enrollments.map(e => e.course.title).join(', ')}
+                            קורסים: {user.enrollments.map(e => e.course.title).join(', ')}
                           </div>
                         )}
                         <div className="text-xs text-muted-foreground mt-1">
-                          Created: {new Date(user.createdAt).toLocaleDateString()}
+                          נוצר: {new Date(user.createdAt).toLocaleDateString('he-IL')}
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
@@ -519,19 +519,19 @@ export default function AdminPage() {
           <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                <AlertDialogTitle>האם אתה בטוח?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete the user account
-                  and all associated data (enrollments, progress, etc.).
+                  פעולה זו לא ניתנת לביטול. זה ימחק לצמיתות את חשבון המשתמש
+                  ואת כל הנתונים הקשורים (הרשמות, התקדמות וכו').
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogCancel>ביטול</AlertDialogCancel>
                 <AlertDialogAction
                   onClick={handleDeleteConfirm}
                   className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                 >
-                  Delete
+                  מחק
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>

@@ -15,34 +15,13 @@ This guide explains how to send login credentials to all users via email.
 
 3. **Add to `.env` file**:
    ```env
-   EMAIL_FROM=your-email@gmail.com
-   SMTP_PASSWORD=your-16-character-app-password
+   EMAIL_FROM=yazambenda@gmail.com
+   SMTP_PASSWORD=ehnw ziqo dqqd quuh
    SMTP_HOST=smtp.gmail.com
    SMTP_PORT=587
    SMTP_SECURE=false
    PLATFORM_URL=https://bendacourse.vercel.app
    ```
-
-### Option 2: Other Email Providers
-
-**Outlook/Hotmail:**
-```env
-EMAIL_FROM=your-email@outlook.com
-SMTP_PASSWORD=your-password
-SMTP_HOST=smtp-mail.outlook.com
-SMTP_PORT=587
-SMTP_SECURE=false
-```
-
-**Custom SMTP:**
-```env
-EMAIL_FROM=your-email@yourdomain.com
-SMTP_USER=your-email@yourdomain.com
-SMTP_PASSWORD=your-password
-SMTP_HOST=smtp.yourdomain.com
-SMTP_PORT=587
-SMTP_SECURE=false
-```
 
 ## How to Send Credentials
 
