@@ -38,14 +38,16 @@ export async function sendWelcomeEmail(
   name: string | null,
   courses: Array<{ id: string; title: string }> = []
 ) {
-  const transporter = createEmailTransporter()
   const fromEmail = getFromEmail()
   const platformUrl = getPlatformUrl()
+  const smtpPassword = process.env.SMTP_PASSWORD || process.env.EMAIL_PASSWORD
 
-  if (!fromEmail || !transporter.options.auth?.pass) {
+  if (!fromEmail || !smtpPassword) {
     console.error('Email configuration missing. Email not sent.')
     return false
   }
+
+  const transporter = createEmailTransporter()
 
   const courseList = courses.length > 0
     ? courses.map(c => `• ${c.title}`).join('<br>')
