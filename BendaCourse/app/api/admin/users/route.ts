@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
         role: true,
         createdAt: true,
         enrollments: {
-          include: {
+          select: {
             course: {
               select: {
                 id: true,
