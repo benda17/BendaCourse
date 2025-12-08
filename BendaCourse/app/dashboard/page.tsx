@@ -101,9 +101,21 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-background via-background to-secondary/20">
-        <div className="text-center">
-          <div className="text-muted-foreground mb-2">טוען...</div>
-          <div className="text-xs text-muted-foreground">אנא המתן</div>
+        <div className="flex flex-col items-center gap-4">
+          <div className="relative w-16 h-16">
+            <Image
+              src="/icon.png"
+              alt="Benda Course Platform"
+              fill
+              className="object-contain animate-pulse"
+              priority
+              sizes="64px"
+            />
+          </div>
+          <div className="text-center">
+            <div className="text-muted-foreground mb-2">טוען...</div>
+            <div className="text-xs text-muted-foreground">אנא המתן</div>
+          </div>
         </div>
       </div>
     )
@@ -237,13 +249,13 @@ export default function DashboardPage() {
       </div>
 
       {/* Icon logo at bottom left */}
-      <div className="fixed bottom-6 left-6 z-50">
+      <div className="fixed bottom-4 sm:bottom-6 left-4 sm:left-6 z-50">
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, delay: 0.3 }}
         >
-          <Image
+          <img
             src="/icon.png"
             alt="Benda Course Platform"
             width={64}
@@ -251,6 +263,10 @@ export default function DashboardPage() {
             className="object-contain drop-shadow-lg"
             style={{
               filter: 'drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3))',
+              display: 'block',
+            }}
+            onError={(e) => {
+              console.error('Failed to load icon.png:', e)
             }}
           />
         </motion.div>

@@ -99,12 +99,12 @@ export default function CourseViewerPage() {
     <div className="h-screen bg-background flex flex-col overflow-hidden">
       {/* Header */}
       <div className="border-b border-border/40 bg-card/80 backdrop-blur-sm flex-shrink-0">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div>
-            <Link href="/dashboard" className="text-sm text-muted-foreground hover:text-primary">
+        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between">
+          <div className="flex-1 min-w-0">
+            <Link href="/dashboard" className="text-xs sm:text-sm text-muted-foreground hover:text-primary block">
               ← חזרה לדשבורד
             </Link>
-            <h1 className="text-xl font-bold mt-1">{course.title}</h1>
+            <h1 className="text-base sm:text-xl font-bold mt-1 truncate">{course.title}</h1>
           </div>
         </div>
       </div>

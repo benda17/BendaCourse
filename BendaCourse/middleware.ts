@@ -28,16 +28,30 @@ async function verifyTokenInMiddleware(token: string): Promise<JWTPayload | null
 }
 
 export async function middleware(request: NextRequest) {
-  const token = request.cookies.get('token')?.value
   const { pathname } = request.nextUrl
+  
+  // Skip static files and assets - MUST be first check
+  // Explicitly check for icon.png and other static assets
+  if (
+    pathname === '/icon.png' ||
+    pathname === '/favicon.ico' ||
+    pathname.match(/\.(ico|png|jpg|jpeg|svg|gif|webp|woff|woff2|ttf|eot|css|js|map)$/i) ||
+    pathname.startsWith('/_next/') ||
+    pathname.startsWith('/api/_next/')
+  ) {
+    // Return early without any processing for static files
+    return NextResponse.next()
+  }
+  
+  const token = request.cookies.get('token')?.value
   
   // Debug JWT_SECRET
   if (pathname === '/dashboard') {
     console.log(`[Middleware] JWT_SECRET available:`, !!JWT_SECRET, 'Length:', JWT_SECRET?.length)
   }
 
-  // Public routes
-  const publicRoutes = ['/', '/login', '/register', '/api/auth', '/api/webhooks', '/test-auth']
+  // Public routes (including icon.png as backup)
+  const publicRoutes = ['/', '/login', '/register', '/api/auth', '/api/webhooks', '/test-auth', '/icon.png', '/favicon.ico']
   if (publicRoutes.some(route => pathname === route || pathname.startsWith(route + '/'))) {
     return NextResponse.next()
   }
@@ -75,6 +89,16 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next (Next.js internal routes)
+     * - favicon.ico (favicon file)
+     * - icon.png (icon file)
+     * - files with extensions (static assets)
+     */
+    '/((?!api|_next|favicon\\.ico|icon\\.png|.*\\.(?:ico|png|jpg|jpeg|svg|gif|webp|woff|woff2|ttf|eot|css|js|map)).*)',
+  ],
 }
 
