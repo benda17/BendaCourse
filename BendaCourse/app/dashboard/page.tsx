@@ -154,10 +154,18 @@ export default function DashboardPage() {
               <>
                 <span className="text-sm text-muted-foreground">{user.email}</span>
                 {user.role === 'ADMIN' && (
-                  <Link href="/admin">
-                    <Button variant="outline">ניהול</Button>
-                  </Link>
+                  <>
+                    <Link href="/admin">
+                      <Button variant="outline">ניהול</Button>
+                    </Link>
+                    <Link href="/admin/support">
+                      <Button variant="outline">מרכז תמיכה</Button>
+                    </Link>
+                  </>
                 )}
+                <Link href="/support">
+                  <Button variant="ghost">תמיכה</Button>
+                </Link>
                 <Button variant="ghost" onClick={handleLogout}>התנתק</Button>
               </>
             )}

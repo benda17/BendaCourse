@@ -289,9 +289,14 @@ export default function AdminPage() {
           <Link href="/dashboard" className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
             Benda Academy
           </Link>
-          <Link href="/dashboard">
-            <Button variant="ghost">חזרה ללוח הבקרה</Button>
-          </Link>
+          <div className="flex gap-2">
+            <Link href="/admin/support">
+              <Button variant="outline">מרכז תמיכה</Button>
+            </Link>
+            <Link href="/dashboard">
+              <Button variant="ghost">חזרה ללוח הבקרה</Button>
+            </Link>
+          </div>
         </div>
       </nav>
 
