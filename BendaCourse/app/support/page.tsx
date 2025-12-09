@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { useToast } from '@/components/ui/use-toast'
 import { motion } from 'framer-motion'
 import { HelpCircle, Video, MessageSquare, Send, ChevronDown, ChevronUp } from 'lucide-react'
+import { AnimatedMeshBackground } from '@/components/animated-mesh-background'
 import {
   Select,
   SelectContent,
@@ -142,8 +143,14 @@ export default function SupportPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/20">
-      <nav className="border-b border-border/40 backdrop-blur-sm bg-background/80 sticky top-0 z-50">
+    <div 
+      className="min-h-screen relative overflow-hidden"
+      style={{
+        background: 'radial-gradient(ellipse 200% 50% at bottom, hsl(var(--primary) / 0.45) 0%, hsl(var(--primary) / 0.35) 20%, hsl(var(--primary) / 0.25) 35%, hsl(var(--primary) / 0.15) 50%, hsl(var(--primary) / 0.08) 65%, hsl(var(--background) / 0.95) 80%, hsl(var(--background)) 100%)'
+      }}
+    >
+      <AnimatedMeshBackground className="z-0" opacity={{ min: 0.1, max: 0.15 }} />
+      <nav className="border-b border-border/40 backdrop-blur-sm bg-background/80 sticky top-0 z-50 relative">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/dashboard" className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
             Benda Academy
@@ -154,7 +161,7 @@ export default function SupportPage() {
         </div>
       </nav>
 
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-12 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

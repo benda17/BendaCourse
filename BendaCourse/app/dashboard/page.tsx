@@ -10,6 +10,7 @@ import { Progress } from '@/components/ui/progress'
 import { useToast } from '@/components/ui/use-toast'
 import { motion } from 'framer-motion'
 import { Play, BookOpen, TrendingUp } from 'lucide-react'
+import { AnimatedMeshBackground } from '@/components/animated-mesh-background'
 
 interface Course {
   id: string
@@ -100,8 +101,14 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-background via-background to-secondary/20">
-        <div className="flex flex-col items-center gap-4">
+      <div 
+        className="min-h-screen flex items-center justify-center relative overflow-hidden"
+        style={{
+          background: 'radial-gradient(ellipse 200% 50% at bottom, hsl(var(--primary) / 0.45) 0%, hsl(var(--primary) / 0.35) 20%, hsl(var(--primary) / 0.25) 35%, hsl(var(--primary) / 0.15) 50%, hsl(var(--primary) / 0.08) 65%, hsl(var(--background) / 0.95) 80%, hsl(var(--background)) 100%)'
+        }}
+      >
+        <AnimatedMeshBackground className="z-0" opacity={{ min: 0.1, max: 0.15 }} />
+        <div className="flex flex-col items-center gap-4 relative z-10">
           <div className="relative w-16 h-16">
             <Image
               src="/icon.png"
@@ -123,8 +130,14 @@ export default function DashboardPage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-background via-background to-secondary/20">
-        <Card className="border-border/40">
+      <div 
+        className="min-h-screen flex items-center justify-center relative overflow-hidden"
+        style={{
+          background: 'radial-gradient(ellipse 200% 50% at bottom, hsl(var(--primary) / 0.45) 0%, hsl(var(--primary) / 0.35) 20%, hsl(var(--primary) / 0.25) 35%, hsl(var(--primary) / 0.15) 50%, hsl(var(--primary) / 0.08) 65%, hsl(var(--background) / 0.95) 80%, hsl(var(--background)) 100%)'
+        }}
+      >
+        <AnimatedMeshBackground className="z-0" opacity={{ min: 0.1, max: 0.15 }} />
+        <Card className="border-border/40 relative z-10">
           <CardContent className="pt-6 text-center">
             <h3 className="text-xl font-semibold mb-2">לא אותרת</h3>
             <p className="text-muted-foreground mb-4">
@@ -142,9 +155,15 @@ export default function DashboardPage() {
   console.log('Dashboard render - user:', user, 'courses:', courses.length, 'loading:', loading)
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/20">
+    <div 
+      className="min-h-screen relative overflow-hidden"
+      style={{
+        background: 'radial-gradient(ellipse 200% 50% at bottom, hsl(var(--primary) / 0.45) 0%, hsl(var(--primary) / 0.35) 20%, hsl(var(--primary) / 0.25) 35%, hsl(var(--primary) / 0.15) 50%, hsl(var(--primary) / 0.08) 65%, hsl(var(--background) / 0.95) 80%, hsl(var(--background)) 100%)'
+      }}
+    >
+      <AnimatedMeshBackground className="z-0" opacity={{ min: 0.1, max: 0.15 }} />
       {/* Navigation */}
-      <nav className="border-b border-border/40 backdrop-blur-sm bg-background/80 sticky top-0 z-50">
+      <nav className="border-b border-border/40 backdrop-blur-sm bg-background/80 sticky top-0 z-50 relative">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/dashboard" className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
             בית הספר של בנדה
@@ -173,7 +192,7 @@ export default function DashboardPage() {
         </div>
       </nav>
 
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-12 relative z-10">
         <div className="flex gap-8 items-start">
           {/* Main content */}
           <div className="flex-1 min-w-0">
