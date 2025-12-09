@@ -123,10 +123,19 @@ export async function POST(request: NextRequest) {
 
     // Send welcome email with credentials
     try {
-      await sendWelcomeEmail(user.email, password, user.name, enrolledCourses)
+      const emailSent = await sendWelcomeEmail(user.email, password, user.name, enrolledCourses)
+      if (!emailSent) {
+        console.error(`[admin/users] Failed to send welcome email to: ${user.email}`)
+        console.error('[admin/users] Check email configuration: EMAIL_FROM/SMTP_USER and SMTP_PASSWORD/EMAIL_PASSWORD')
+      } else {
+        console.log(`[admin/users] Welcome email sent successfully to: ${user.email}`)
+      }
     } catch (error) {
       // Log error but don't fail user creation
-      console.error('Failed to send welcome email:', error)
+      console.error('[admin/users] Error sending welcome email:', error)
+      if (error instanceof Error) {
+        console.error('[admin/users] Error details:', error.message)
+      }
     }
 
     // Fetch user with enrollments for response

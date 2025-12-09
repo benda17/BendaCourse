@@ -15,7 +15,8 @@
     "db:setup": "tsx scripts/setup-database.ts",
     "send:credentials": "tsx scripts/send-user-credentials.ts",
     "resend:credentials": "tsx scripts/resend-failed-credentials.ts",
-    "test:db": "tsx test-db-connection.ts"
+    "test:db": "tsx test-db-connection.ts",
+    "test:email": "tsx scripts/test-email-config.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.7.1",

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { generateResetToken } from '@/lib/auth'
+import { sendPasswordResetEmail } from '@/lib/email'
 import { z } from 'zod'
 
 export const dynamic = 'force-dynamic'
@@ -38,9 +39,19 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // TODO: Send email with reset link
-    // For now, just return success
-    // In production, integrate with email service (SendGrid, Resend, etc.)
+    // Send password reset email
+    try {
+      const emailSent = await sendPasswordResetEmail(user.email, token, user.name)
+      if (!emailSent) {
+        console.error(`[forgot-password] Failed to send password reset email to: ${user.email}`)
+        // Still return success to user for security (don't reveal if email failed)
+      } else {
+        console.log(`[forgot-password] Password reset email sent successfully to: ${user.email}`)
+      }
+    } catch (error) {
+      console.error('[forgot-password] Error sending password reset email:', error)
+      // Still return success to user for security (don't reveal if email failed)
+    }
 
     return NextResponse.json({
       message: 'If an account exists, a password reset link has been sent.',
