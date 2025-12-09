@@ -11,14 +11,43 @@ export interface EmailConfig {
 }
 
 export function createEmailTransporter() {
+  // Get password and remove any spaces (Gmail app passwords should not have spaces)
+  const rawPassword = process.env.SMTP_PASSWORD || process.env.EMAIL_PASSWORD || ''
+  const password = rawPassword.replace(/\s+/g, '') // Remove all spaces
+  const fromEmail = process.env.SMTP_USER || process.env.EMAIL_FROM || ''
+  
+  // Debug logging (without exposing full password)
+  console.log('[createEmailTransporter] Email config check:')
+  console.log(`[createEmailTransporter] From Email: ${fromEmail}`)
+  console.log(`[createEmailTransporter] Password length: ${password.length} (was ${rawPassword.length} before space removal)`)
+  console.log(`[createEmailTransporter] Password has spaces: ${rawPassword.includes(' ')}`)
+  console.log(`[createEmailTransporter] SMTP Host: ${process.env.SMTP_HOST || 'smtp.gmail.com'}`)
+  console.log(`[createEmailTransporter] SMTP Port: ${process.env.SMTP_PORT || '587'}`)
+  
   const emailConfig: EmailConfig = {
     host: process.env.SMTP_HOST || 'smtp.gmail.com',
     port: parseInt(process.env.SMTP_PORT || '587'),
     secure: process.env.SMTP_SECURE === 'true',
     auth: {
-      user: process.env.SMTP_USER || process.env.EMAIL_FROM || '',
-      pass: process.env.SMTP_PASSWORD || process.env.EMAIL_PASSWORD || '',
+      user: fromEmail,
+      pass: password,
     },
+  }
+
+  // Warn if password had spaces (common mistake)
+  if (rawPassword !== password && rawPassword.length > 0) {
+    console.warn('[createEmailTransporter] ⚠️ Removed spaces from SMTP_PASSWORD. Gmail app passwords should not contain spaces.')
+    console.warn(`[createEmailTransporter] Original length: ${rawPassword.length}, After removal: ${password.length}`)
+  }
+
+  // Check if password is empty
+  if (!password) {
+    console.error('[createEmailTransporter] ❌ SMTP_PASSWORD is empty!')
+  }
+
+  // Check if email is empty
+  if (!fromEmail) {
+    console.error('[createEmailTransporter] ❌ EMAIL_FROM is empty!')
   }
 
   return nodemailer.createTransport(emailConfig)
@@ -150,6 +179,8 @@ export async function sendPasswordResetEmail(
   if (!config.isValid) {
     console.error('[sendPasswordResetEmail] Email configuration missing. Email not sent.')
     console.error('[sendPasswordResetEmail] Missing:', config.missing.join(', '))
+    console.error('[sendPasswordResetEmail] ⚠️  Set these in Vercel Dashboard → Settings → Environment Variables')
+    console.error('[sendPasswordResetEmail] See VERCEL_EMAIL_SETUP.md for instructions')
     logEmailConfigStatus()
     return false
   }
@@ -221,6 +252,18 @@ ${resetUrl}
     return true
   } catch (error) {
     console.error('[sendPasswordResetEmail] Failed to send password reset email:', error)
+    if (error instanceof Error) {
+      // Check for common Gmail authentication errors
+      if (error.message.includes('BadCredentials') || error.message.includes('Username and Password not accepted')) {
+        console.error('[sendPasswordResetEmail] ⚠️  Gmail authentication failed!')
+        console.error('[sendPasswordResetEmail] Common issues:')
+        console.error('[sendPasswordResetEmail]   1. Gmail App Password has spaces - remove all spaces')
+        console.error('[sendPasswordResetEmail]   2. App Password is incorrect or expired')
+        console.error('[sendPasswordResetEmail]   3. EMAIL_FROM does not match the Gmail account')
+        console.error('[sendPasswordResetEmail] Solution: Generate a new App Password at https://myaccount.google.com/apppasswords')
+        console.error('[sendPasswordResetEmail] Make sure to copy it WITHOUT spaces when setting in Vercel')
+      }
+    }
     return false
   }
 }
@@ -236,6 +279,8 @@ export async function sendWelcomeEmail(
   if (!config.isValid) {
     console.error('[sendWelcomeEmail] Email configuration missing. Email not sent.')
     console.error('[sendWelcomeEmail] Missing:', config.missing.join(', '))
+    console.error('[sendWelcomeEmail] ⚠️  Set these in Vercel Dashboard → Settings → Environment Variables')
+    console.error('[sendWelcomeEmail] See VERCEL_EMAIL_SETUP.md for instructions')
     logEmailConfigStatus()
     return false
   }
@@ -345,6 +390,19 @@ ${platformUrl}/login
     console.error('[sendWelcomeEmail] Failed to send welcome email:', error)
     if (error instanceof Error) {
       console.error('[sendWelcomeEmail] Error details:', error.message)
+      
+      // Check for common Gmail authentication errors
+      if (error.message.includes('BadCredentials') || error.message.includes('Username and Password not accepted')) {
+        console.error('[sendWelcomeEmail] ⚠️  Gmail authentication failed!')
+        console.error('[sendWelcomeEmail] Common issues:')
+        console.error('[sendWelcomeEmail]   1. Gmail App Password has spaces - remove all spaces')
+        console.error('[sendWelcomeEmail]   2. App Password is incorrect or expired')
+        console.error('[sendWelcomeEmail]   3. EMAIL_FROM does not match the Gmail account')
+        console.error('[sendWelcomeEmail]   4. 2FA not enabled on Gmail account')
+        console.error('[sendWelcomeEmail] Solution: Generate a new App Password at https://myaccount.google.com/apppasswords')
+        console.error('[sendWelcomeEmail] Make sure to copy it WITHOUT spaces when setting in Vercel')
+      }
+      
       console.error('[sendWelcomeEmail] Stack:', error.stack)
     }
     return false
