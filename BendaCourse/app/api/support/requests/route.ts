@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
 
     const requests = await prisma.userRequest.findMany({
       where: {
-        userId: user.id,
+        userId: user.userId,
       },
       orderBy: {
         createdAt: 'desc',
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
 
     const userRequest = await prisma.userRequest.create({
       data: {
-        userId: user.id,
+        userId: user.userId,
         type,
         title,
         content,
