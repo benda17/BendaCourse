@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
       data: {
         adminResponse,
         status,
-        respondedBy: admin.id,
+        respondedBy: admin.userId,
         respondedAt: new Date(),
       },
       include: {
