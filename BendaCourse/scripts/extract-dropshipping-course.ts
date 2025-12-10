@@ -149,8 +149,8 @@ async function extractCourse() {
         const isModuleHeader = text.includes('פרק') || text.includes('חלק') || text.includes('מודול') ||
                                parent?.querySelector('h2, h3, h4, .module-title, .chapter-title')
 
-        if (isModuleHeader || (currentModule && currentModule.lessons.length === 0 && text.match(/^פרק|^חלק|^מודול/))) {
-          if (currentModule && currentModule.lessons.length > 0) {
+        if (isModuleHeader || (currentModule !== null && currentModule.lessons.length === 0 && text.match(/^פרק|^חלק|^מודול/))) {
+          if (currentModule !== null && currentModule.lessons.length > 0) {
             data.modules.push(currentModule)
           }
           
@@ -163,12 +163,17 @@ async function extractCourse() {
           return
         }
 
-        if (!currentModule) {
+        if (currentModule === null) {
           currentModule = {
             title: `פרק ${moduleOrder}`,
             order: moduleOrder++,
             lessons: []
           }
+        }
+        
+        // TypeScript guard - ensure currentModule is not null
+        if (currentModule === null) {
+          return
         }
 
         const durationMatch = parent?.textContent?.match(/(\d+):(\d+)/)
@@ -192,8 +197,10 @@ async function extractCourse() {
         })
       })
 
-      if (currentModule && currentModule.lessons.length > 0) {
-        data.modules.push(currentModule)
+      // Add last module if it exists and has lessons
+      const finalModule: Module | null = currentModule
+      if (finalModule !== null && finalModule.lessons.length > 0) {
+        data.modules.push(finalModule)
       }
 
       return data
