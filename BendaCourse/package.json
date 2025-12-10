@@ -17,7 +17,13 @@
     "resend:credentials": "tsx scripts/resend-failed-credentials.ts",
     "test:db": "tsx test-db-connection.ts",
     "test:email": "tsx scripts/test-email-config.ts",
-    "test:send-email": "tsx scripts/test-send-email.ts"
+    "test:send-email": "tsx scripts/test-send-email.ts",
+    "extract:sales-course": "tsx scripts/extract-sales-course.ts",
+    "extract:dropshipping-course": "tsx scripts/extract-dropshipping-course.ts",
+    "extract:dropshipping-videos": "tsx scripts/extract-dropshipping-videos.ts",
+    "extract:videos": "tsx scripts/extract-videos-from-json.ts",
+    "import:sales-course": "tsx scripts/import-sales-course.ts",
+    "import:dropshipping-course": "tsx scripts/import-dropshipping-course.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.7.1",

@@ -49,6 +49,18 @@ export function createEmailTransporter() {
   if (!fromEmail) {
     console.error('[createEmailTransporter] ❌ EMAIL_FROM is empty!')
   }
+  
+  // Validate email format
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (fromEmail && !emailRegex.test(fromEmail)) {
+    console.error(`[createEmailTransporter] ❌ EMAIL_FROM format is invalid: ${fromEmail}`)
+  }
+  
+  // Warn if email looks suspicious (common typos)
+  if (fromEmail && fromEmail.includes('@gmail.com') && !fromEmail.match(/^[a-z0-9]+@gmail\.com$/i)) {
+    console.warn(`[createEmailTransporter] ⚠️  EMAIL_FROM may have formatting issues: ${fromEmail}`)
+    console.warn(`[createEmailTransporter] Make sure it's exactly: yourname@gmail.com (no spaces, no quotes)`)
+  }
 
   return nodemailer.createTransport(emailConfig)
 }

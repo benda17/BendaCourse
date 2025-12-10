@@ -149,8 +149,11 @@ export default function AdminPage() {
     }
   }
 
-  const handleEnroll = async () => {
-    if (!enrollUserId || !enrollCourseId) {
+  const handleEnroll = async (userId?: string, courseId?: string) => {
+    const targetUserId = userId || enrollUserId
+    const targetCourseId = courseId || enrollCourseId
+
+    if (!targetUserId || !targetCourseId) {
       toast({
         title: 'שדות חסרים',
         description: 'אנא מלא גם מזהה משתמש וגם מזהה קורס.',
@@ -160,17 +163,17 @@ export default function AdminPage() {
     }
 
     try {
-      const response = await fetch(`/api/admin/users/${enrollUserId}/enroll`, {
+      const response = await fetch(`/api/admin/users/${targetUserId}/enroll`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ courseId: enrollCourseId }),
+        body: JSON.stringify({ courseId: targetCourseId }),
       })
 
       if (response.ok) {
-      toast({
-        title: 'המשתמש נרשם',
-        description: 'המשתמש נרשם בהצלחה לקורס.',
-      })
+        toast({
+          title: 'המשתמש נרשם',
+          description: 'המשתמש נרשם בהצלחה לקורס.',
+        })
         setEnrollUserId('')
         setEnrollCourseId('')
         fetchUsers()
@@ -356,24 +359,48 @@ export default function AdminPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="userId">מזהה משתמש</Label>
-                  <Input
-                    id="userId"
-                    value={enrollUserId}
-                    onChange={(e) => setEnrollUserId(e.target.value)}
-                    placeholder="מזהה משתמש"
-                  />
+                  <Label htmlFor="userId">בחר משתמש</Label>
+                  <Select
+                    value={enrollUserId || 'none'}
+                    onValueChange={(value) => setEnrollUserId(value === 'none' ? '' : value)}
+                  >
+                    <SelectTrigger id="userId">
+                      <SelectValue placeholder="בחר משתמש..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">בחר משתמש...</SelectItem>
+                      {users.map((user) => (
+                        <SelectItem key={user.id} value={user.id}>
+                          {user.name || user.email} ({user.email})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="courseId">מזהה קורס</Label>
-                  <Input
-                    id="courseId"
-                    value={enrollCourseId}
-                    onChange={(e) => setEnrollCourseId(e.target.value)}
-                    placeholder="מזהה קורס"
-                  />
+                  <Label htmlFor="courseId">בחר קורס</Label>
+                  <Select
+                    value={enrollCourseId || 'none'}
+                    onValueChange={(value) => setEnrollCourseId(value === 'none' ? '' : value)}
+                  >
+                    <SelectTrigger id="courseId">
+                      <SelectValue placeholder="בחר קורס..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">בחר קורס...</SelectItem>
+                      {courses.filter(c => c.isActive).map((course) => (
+                        <SelectItem key={course.id} value={course.id}>
+                          {course.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
-                <Button onClick={handleEnroll} className="w-full">
+                <Button 
+                  onClick={handleEnroll} 
+                  className="w-full"
+                  disabled={!enrollUserId || !enrollCourseId || enrollUserId === 'none' || enrollCourseId === 'none'}
+                >
                   הרשם משתמש
                 </Button>
               </CardContent>
@@ -547,6 +574,31 @@ export default function AdminPage() {
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
+                        <Select
+                          value=""
+                          onValueChange={(courseId) => {
+                            if (courseId && courseId !== 'none') {
+                              handleEnroll(user.id, courseId)
+                            }
+                          }}
+                        >
+                          <SelectTrigger className="w-40">
+                            <SelectValue placeholder="הוסף קורס..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="none" disabled>בחר קורס...</SelectItem>
+                            {courses
+                              .filter(c => c.isActive && !user.enrollments.some(e => e.course.id === c.id))
+                              .map((course) => (
+                                <SelectItem key={course.id} value={course.id}>
+                                  {course.title}
+                                </SelectItem>
+                              ))}
+                            {courses.filter(c => c.isActive && !user.enrollments.some(e => e.course.id === c.id)).length === 0 && (
+                              <SelectItem value="none" disabled>כל הקורסים כבר נרשמו</SelectItem>
+                            )}
+                          </SelectContent>
+                        </Select>
                         <div className="text-xs text-muted-foreground font-mono">
                           {user.id.substring(0, 8)}...
                         </div>
