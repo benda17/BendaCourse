@@ -133,14 +133,14 @@ async function importCourse() {
           },
           update: {
             title: lessonData.title,
-            videoUrl: lessonData.videoUrl || null,
+            videoUrl: lessonData.videoUrl || '',
             youtubeId: youtubeId,
             duration: lessonData.duration || null,
           },
           create: {
             moduleId: module.id,
             title: lessonData.title,
-            videoUrl: lessonData.videoUrl || null,
+            videoUrl: lessonData.videoUrl || '',
             youtubeId: youtubeId,
             duration: lessonData.duration || null,
             order: lessonData.order,
