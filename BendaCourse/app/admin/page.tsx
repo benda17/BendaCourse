@@ -397,7 +397,7 @@ export default function AdminPage() {
                   </Select>
                 </div>
                 <Button 
-                  onClick={handleEnroll} 
+                  onClick={() => handleEnroll()} 
                   className="w-full"
                   disabled={!enrollUserId || !enrollCourseId || enrollUserId === 'none' || enrollCourseId === 'none'}
                 >
