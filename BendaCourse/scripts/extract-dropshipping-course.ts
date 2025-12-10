@@ -198,9 +198,11 @@ async function extractCourse() {
       })
 
       // Add last module if it exists and has lessons
-      const finalModule: Module | null = currentModule
-      if (finalModule !== null && finalModule.lessons.length > 0) {
-        data.modules.push(finalModule)
+      if (currentModule !== null) {
+        const finalModule = currentModule as Module
+        if (finalModule.lessons.length > 0) {
+          data.modules.push(finalModule)
+        }
       }
 
       return data
